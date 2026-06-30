@@ -1,33 +1,21 @@
-from typing import Any, Dict
+from bot.services.admin_service import AdminService
+from bot.services.crystal_service import CrystalService
+from bot.services.match_service import MatchService
+from bot.services.payment_service import PaymentService
+from bot.services.premium_service import PremiumService
+from bot.services.referral_service import ReferralService
+from bot.services.report_service import ReportService
+from bot.services.search_service import SearchService
+from bot.services.user_service import UserService
 
-from bot.locales.en import STRINGS as EN_STRINGS
-from bot.locales.ru import STRINGS as RU_STRINGS
-from bot.locales.zh import STRINGS as ZH_STRINGS
-
-LOCALES: Dict[str, Dict[str, Any]] = {
-    "ru": RU_STRINGS,
-    "en": EN_STRINGS,
-    "zh": ZH_STRINGS,
-}
-
-SUPPORTED_LANGUAGES = list(LOCALES.keys())
-
-
-def get_string(lang: str, key: str, **kwargs) -> str:
-    strings = LOCALES.get(lang, LOCALES["ru"])
-    template = strings.get(key, LOCALES["ru"].get(key, key))
-    if kwargs:
-        try:
-            return template.format(**kwargs)
-        except (KeyError, IndexError):
-            return template
-    return template
-
-
-def detect_language(lang_code: str) -> str:
-    if not lang_code:
-        return "ru"
-    code = lang_code.lower()[:2]
-    if code in SUPPORTED_LANGUAGES:
-        return code
-    return "ru"
+__all__ = [
+    "UserService",
+    "SearchService",
+    "MatchService",
+    "ReportService",
+    "PremiumService",
+    "CrystalService",
+    "PaymentService",
+    "ReferralService",
+    "AdminService",
+]
