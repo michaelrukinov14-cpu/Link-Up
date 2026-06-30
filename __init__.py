@@ -1,20 +1,33 @@
-from bot.database.repositories.ban_repo import BanRepository
-from bot.database.repositories.like_repo import LikeRepository
-from bot.database.repositories.photo_repo import PhotoRepository
-from bot.database.repositories.premium_repo import PremiumRepository
-from bot.database.repositories.referral_repo import ReferralRepository
-from bot.database.repositories.report_repo import ReportRepository
-from bot.database.repositories.transaction_repo import CrystalTransactionRepository, TransactionRepository
-from bot.database.repositories.user_repo import UserRepository
+from typing import Any, Dict
 
-__all__ = [
-    "UserRepository",
-    "PhotoRepository",
-    "LikeRepository",
-    "ReportRepository",
-    "BanRepository",
-    "PremiumRepository",
-    "TransactionRepository",
-    "CrystalTransactionRepository",
-    "ReferralRepository",
-]
+from bot.locales.en import STRINGS as EN_STRINGS
+from bot.locales.ru import STRINGS as RU_STRINGS
+from bot.locales.zh import STRINGS as ZH_STRINGS
+
+LOCALES: Dict[str, Dict[str, Any]] = {
+    "ru": RU_STRINGS,
+    "en": EN_STRINGS,
+    "zh": ZH_STRINGS,
+}
+
+SUPPORTED_LANGUAGES = list(LOCALES.keys())
+
+
+def get_string(lang: str, key: str, **kwargs) -> str:
+    strings = LOCALES.get(lang, LOCALES["ru"])
+    template = strings.get(key, LOCALES["ru"].get(key, key))
+    if kwargs:
+        try:
+            return template.format(**kwargs)
+        except (KeyError, IndexError):
+            return template
+    return template
+
+
+def detect_language(lang_code: str) -> str:
+    if not lang_code:
+        return "ru"
+    code = lang_code.lower()[:2]
+    if code in SUPPORTED_LANGUAGES:
+        return code
+    return "ru"
